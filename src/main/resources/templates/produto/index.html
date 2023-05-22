@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro de Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <style>
+        main{
+            overflow-y: scroll;
+        }
+
+
+    </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<header th:include="fragmentos::topo"></header>
+
+
+<main>
+<form enctype="multipart/form-data" th:action="@{/produto/salvar}" th:object="${produto}" method="post">
+    
+    <h1 style="font-family: cursive;" >Cadastro de Produto</h1>
+    <div>
+        <label for="idCategoria">Categoria:</label>
+        <select  class="form-control" id="idCategoria" th:field="*{categoria.id}">
+            <option value="">Selecione uma categoria</option>
+            <option th:each="item:${listacategoria}"
+                    th:value="${item.id}"
+                    th:text="${item.descricao}"
+            ></option>
+        </select>
+    </div>
+
+    <div>
+        <label for="idFornecedor">Fornecedor:</label>
+        <select  class="form-control" id="idFornecedor" th:field="*{fornecedor.id}">
+            <option value="" >Selecione um Fornecedor</option>
+            <option th:each="item:${listafornecedor}"
+                    th:value="${item.id}"
+                    th:text="${item.nome}"
+            ></option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição:</label>
+        <input type="text" id="descricao"  th:field="*{descricao}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label for="preco" class="form-label">Preço:</label>
+        <input type="text" id="preco" step="0.01" th:field="*{preco}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label for="quantidade" class="form-label">Quantidade:</label>
+        <input type="text" id="quantidade" step="1" th:field="*{qntd}" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Imagem</label>
+        <input type="file" id="file" name="file" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+<div th:if="${retorno} !=null" class="row">
+    <span th:if="${retorno}" class="alert alert-success" th:text="${mensagem}"></span>
+    <span th:if="!${retorno}" class="alert alert-danger" th:text="${mensagem}"></span>
+</div>
+<br>
+<br>
+<br>
+<br>
+</main>
+<footer th:include="fragmentos::rodape"></footer>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+</head>
+<body>
+<header th:fragment="topo">
+
+    <style>
+        nav{
+          height: 65px;
+        }
+
+    </style>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Site de compras</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a th:href="@{/index}" class="nav-link active" aria-current="page" href="#">Página inicial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/categoria/listar}" class="nav-link active" aria-current="page" href="#">Categoria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/produto/listar}" class="nav-link active" aria-current="page" href="#">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/funcionario/listar}" class="nav-link active" aria-current="page" href="#">Funcionários</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/fornecedor/listar}" class="nav-link active" aria-current="page" href="#">Fornecedores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/clientes/listar}" class="nav-link active" aria-current="page" href="#">Clientes Cadastrados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/vendas/listar}" class="nav-link active" aria-current="page" href="#">Vendas Realizadas</a>
+                    </li> <li class="nav-item">
+                        <a th:href="@{/logout}" class="nav-link active" aria-current="page" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+</header>
+<footer th:fragment="rodape">
+    <style>
+		footer {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			position:fixed;
+			bottom: 0;
+			width: 100%;
+            
+		}
+
+		a {
+			color: #fff;
+			text-decoration: none;
+			text-align: center;
+			align-items: center;
+			align-self: center;
+		}
+
+		p {
+			margin: 0;
+		}
+	</style>
+    <p>Desenvolvido por Felipe Silveira &copy; All rights reserved</p>
+
+</footer>
+<div th:fragment="script">
+    <script>
+        var url = "";
+$(".excluir").on("click", function(){
+// no clique do botão excluir, guardar a url para ser chamada na confirmação da janela modal
+url = $(this).attr("data-value");
+url = url.replace("{id}", $(this).attr("id"));
+});
+$("#ok_confirm").click(function(){ // botão de confirmação da janela modal, chamará a controller
+document.location.href="http://localhost:8080" + url;
+});
+</script>
+</div>
+</body>
+
+</html>
