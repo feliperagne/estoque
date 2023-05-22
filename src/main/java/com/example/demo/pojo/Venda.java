@@ -21,6 +21,7 @@ public class Venda extends AbstractEntity<Integer>{
     @JoinColumn(name = "idFuncionario")
     private Funcionario funcionario;
 
+
     @OneToMany(mappedBy = "venda")
     private List<DetalheVenda> detalheVendas;
 

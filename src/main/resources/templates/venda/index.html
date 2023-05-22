@@ -52,6 +52,7 @@
             value="1"
             type="number"
             id="txtquantidade"
+            placeholder="insira a quantidade de produtos"
             class="form-control"
           />
         </div>
@@ -101,7 +102,7 @@
       <button id="btnsalvar">Salvar</button>
     </main>
     <footer th:include="fragmentos::rodape"></footer>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
         $("#btnincluirproduto").click(function () {
@@ -114,10 +115,10 @@
       });
 
       function incluirProduto() {
-        var linha = $("#linhamodelo").clone();
+        var linha = $("#linhaModelo").clone();
         linha.attr("id", "");
 
-        $(linha).find(".codigo").text($("#idproduto").val());
+        $(linha).find(".codigo").text($("#idProduto").val());
 
         $(linha)
           .find(".descricao")
@@ -139,8 +140,6 @@
           });
 
         $("#dadostabela").append(linha);
-
-        buscarProduto($("#idproduto").val(), linha);
       }
 
       function buscarProduto(id, linha) {
@@ -152,7 +151,7 @@
             $(linha)
               .find(".total")
               .text(resultado.valor * qtde);
-            $(linha).find(".quantidadeproduto").val($("txtquantidade").val());
+            $(linha).find(".quantidadeproduto").val($("#txtquantidade").val());
             $(linha)
               .find(".quantidadeproduto")
               .change(function () {
@@ -164,16 +163,15 @@
                 excluirProduto(linha);
               });
 
-            $("dadostabela").append(linha);
-            buscarProduto($("#idproduto").val(), linha);
+            $("#dadosTabela").append(linha);
           }
         );
       }
 
       function alterarProduto(linha) {
         console.log(linha);
-        var valorunitario = $(linha).find(".valorunitario").text();
-        var qtde = $(linha).find(".quantidadeproduto").val();
+        var valorunitario = parseFloat($(linha).find(".valorunitario").text());
+        var qtde = parseFloat($(linha).find(".quantidadeproduto").val());
         $(linha)
           .find(".total")
           .text(valorunitario * qtde);
@@ -186,7 +184,7 @@
       function calcularTotal() {
         var total = 0;
 
-        $("#dadostabela").each(function (index, elemento) {
+        $("#dadosTabela").each(function (index, elemento) {
           var valor = $(elemento).find(".totalnumber").val();
 
           total = parseFloat(total) + parseFloat(valor);
@@ -197,14 +195,14 @@
 
       function salvarProduto() {
         var produto = {
-          id: $("#produto").val(),
-          descricao: $("#produto").text(),
+          id: $("#idProduto").val(),
+          descricao: $("#idProduto option:selected").text(),
         };
 
         var model = {
           id: "null",
           produto: produto,
-          qtde: $("#quantidade").val(),
+          qtde: $("#txtquantidade").val(),
         };
 
         $.ajax({
@@ -237,29 +235,26 @@
           var quantidade = $(this).find(".quantidade").val();
 
           produtos.push({
-            codigo: codigo,
-            quantidade: quantidade,
+            id: id,
+            qntd: qntd,
           });
         });
 
-        // Crie um objeto com os dados da venda
         var venda = {
           idCliente: idCliente,
           produtos: produtos,
         };
 
-        // Faça uma requisição AJAX para enviar os dados da venda para o backend
+      
         $.ajax({
           type: "POST",
-          url: "http://localhost:8080/venda/salvarProduto", // substitua pela URL correta do endpoint de criação de vendas
+          url: "http://localhost:8080/venda/finalizarVenda",
           contentType: "application/json",
           data: JSON.stringify(venda),
           success: function (response) {
-            // Sucesso! Faça o que for necessário após finalizar a venda, como redirecionar para outra página ou exibir uma mensagem de sucesso.
             alert("Venda finalizada com sucesso!");
           },
           error: function (xhr, status, error) {
-            // Ocorreu um erro ao finalizar a venda. Trate o erro adequadamente, exibindo uma mensagem de erro ou realizando outras ações necessárias.
             console.log("Erro ao finalizar a venda:", error);
           },
         });

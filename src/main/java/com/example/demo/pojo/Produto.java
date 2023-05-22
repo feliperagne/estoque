@@ -32,6 +32,7 @@ public class Produto extends AbstractEntity<Integer> {
     @ManyToOne
     @JoinColumn(name = "fornecedor")
     private Fornecedor fornecedor;
+    
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "categoria")
