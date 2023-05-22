@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dao.FuncionarioDAO;
 import com.example.demo.dao.UsuarioDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
     @Autowired
     UsuarioDao dao;
+
+    @Autowired 
+    FuncionarioDAO funcionarioDAO;
+
     @GetMapping("/")
     public String home (ModelMap model){
         model.addAttribute("nomeusuario" , dao.getUsuarioLogado().getNome());
-        return "index";
+        return "/index";
     }
     @GetMapping("/login")
     public String login() {

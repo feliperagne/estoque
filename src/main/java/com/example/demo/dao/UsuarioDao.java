@@ -32,10 +32,16 @@ public class UsuarioDao extends AbstractDao<Users, Integer> implements UserDetai
         List<Users> lista = this.createQuery("select u from Users u where u.username like ?1", username) ;
         return lista.isEmpty() ? null : lista.get(0);
     }
+
     public Funcionario findByFuncionarioUserName(String username) {
-        List<Funcionario> lista = funcionarioDAO.createQuery("select c from Users u inner join Funcionario c where u.username like ?1", username) ;
+        List<Funcionario> lista = funcionarioDAO.createQuery(
+            "select c from Users u inner join u.funcionario c where u.username like ?1",
+            username
+        );
         return lista.isEmpty() ? null : lista.get(0);
     }
+    
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = findByUserName(username);

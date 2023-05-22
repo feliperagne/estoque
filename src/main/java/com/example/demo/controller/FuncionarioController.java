@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dao.FuncionarioDAO;
+import com.example.demo.dao.UsuarioDao;
 import com.example.demo.pojo.AppAuthority;
 import com.example.demo.pojo.Funcionario;
 import com.example.demo.pojo.Users;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Random;
@@ -30,6 +32,9 @@ import java.util.Set;
 public class FuncionarioController {
     @Autowired
     FuncionarioDAO dao;
+
+    @Autowired 
+    UsuarioDao daoUsuario;
 
 
     @GetMapping("/novo")
@@ -80,6 +85,11 @@ public class FuncionarioController {
             for (ConstraintViolation<Funcionario> constraintViolation : constraintViolations) {
                 errors = errors + constraintViolation.getMessage() + ". ";
             }
+
+            if(file.isEmpty()){
+                errors = errors + "Selecione uma imagem!";
+            }
+
             if (errors != "") {
                 //tem erros
                 model.addAttribute("funcionario", funcionario);
@@ -105,15 +115,30 @@ public class FuncionarioController {
                 String nomeArquivo = ran.nextInt() + file.getOriginalFilename();
                 funcionario.setImagem(nomeArquivo);
 
-                if (funcionario.getId() == null)
+              
+
+                if (funcionario.getId() == null){
                     dao.save(funcionario);
-                else
+                }
+                else{
                     dao.update(funcionario);
+                    daoUsuario.update(usuarios);
+                }
 
                 model.addAttribute("mensagem", "Salvo com sucesso!");
                 model.addAttribute("retorno",true);
+
+                try { byte[] bytes = file.getBytes();
+                    Path path = Paths.get(System.getProperty("user.dir") +"\\src\\main\\resources\\static\\image\\"
+                            + nomeArquivo);
+                    Files.write(path, bytes);
+                } catch (IOException e) {
+                    e.printStackTrace(); }
+
             }
         }catch (Exception e) {
+
+
             model.addAttribute("mensagem", "Erro ao salvar" + e.getMessage());
             model.addAttribute("retorno", false);
 

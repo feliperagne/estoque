@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -14,8 +16,10 @@ import java.util.Set;
 @Table(name="Users")
 public class Users extends AbstractEntity<Integer> implements UserDetails {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.PERSIST)
-    private List<Funcionario> funcionarios;
+    private List<Funcionario> funcionario;
+    
     @Column(length = 150, nullable = false)
     private String username;
     @Column(length = 350, nullable = false)
@@ -104,11 +108,11 @@ public class Users extends AbstractEntity<Integer> implements UserDetails {
         return false;
     }
 
-    public List<Funcionario> geFuncionarios() {
-        return funcionarios;
+    public List<Funcionario> gefuncionario() {
+        return funcionario;
     }
 
-    public void setFuncionarios(List<Funcionario> funcionarios) {
-        this.funcionarios = funcionarios;
+    public void setfuncionario(List<Funcionario> funcionario) {
+        this.funcionario = funcionario;
     }
 }
