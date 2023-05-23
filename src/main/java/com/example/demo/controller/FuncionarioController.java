@@ -74,7 +74,7 @@ public class FuncionarioController {
         return "/funcionario/listar";
     }
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute("funcionario") Funcionario funcionario, ModelMap model, @RequestParam("file")MultipartFile file) {
+    public String salvar(@ModelAttribute("funcionario") Funcionario funcionario, ModelMap model, @RequestParam("file")MultipartFile file, @RequestParam(value = "isAdmin", required = false) boolean isAdmin) {
         try {
             Validator validator;
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -102,7 +102,7 @@ public class FuncionarioController {
                 String senha = "{bcrypt}" + new BCryptPasswordEncoder().encode(usuarios.getPassword());
                 usuarios.setPassword(senha);
                 usuarios.setEnabled(true);
-                usuarios.setAdmin(false);
+                usuarios.setAdmin(isAdmin);
 
                 Set<AppAuthority> appAuthorities = new HashSet<AppAuthority>();
                 AppAuthority app = new AppAuthority();
