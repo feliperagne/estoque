@@ -71,23 +71,23 @@
             <th scope="col">Quantidade</th>
             <th scope="col">Valor Unitário</th>
             <th scope="col">Total</th>
-            <th scope="col">Alterar</th>
             <th scope="col">Excluir</th>
           </tr>
         </thead>
         <tbody id="dadosTabela"></tbody>
       </table>
 
-      <table style="diplay: none">
+      <table style="display: none">
         <tr id="linhaModelo">
           <td class="codigo"></td>
           <td class="descricao"></td>
-          <td class="quantidade"></td>
+          <td class="quantidade">
           <select class="qntdproduto">
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
           </select>
+        </td>
           <td class="valorunitario"></td>
           <td class="total"></td>
           <td class="totalinput">
@@ -115,20 +115,24 @@
       });
 
       function incluirProduto() {
+
         var linha = $("#linhaModelo").clone();
         linha.attr("id", "");
 
+       var id = $("#idProduto").val();
+        
         $(linha).find(".codigo").text($("#idProduto").val());
 
         $(linha)
           .find(".descricao")
-          .text($("#idproduto option:selected").text());
-
-        $(linha).find(".quantidade").val($("#txtquantidade").val());
+          .text($("#idProduto option:selected").text());
+          buscarProduto(id, linha);
+/*
+        $(linha).find(".qntdproduto").val($("#txtquantidade").val());
 
         //alterando a qtde do produto
         $(linha)
-          .find(".quantidade")
+          .find(".qntdproduto")
           .change(function () {
             alterarProduto(linha);
           });
@@ -139,21 +143,23 @@
             excluirProduto(linha);
           });
 
-        $("#dadostabela").append(linha);
+        $("#dadosTabela").append(linha);*/
       }
 
       function buscarProduto(id, linha) {
         $.get(
           "http://localhost:8080/produto/getProduto/" + id,
           function (resultado) {
-            var qtde = $(linha).find(".quantidadeproduto").val();
+            var qtde = $("#txtquantidade").val();
             console.log(resultado);
+            $(linha).find(".valorunitario").text(resultado.preco);
+            $(linha).find(".totalnumber").val(resultado.preco*qtde);
             $(linha)
               .find(".total")
-              .text(resultado.valor * qtde);
-            $(linha).find(".quantidadeproduto").val($("#txtquantidade").val());
+              .text(resultado.preco * qtde);
+            $(linha).find(".qntdproduto").val($("#txtquantidade").val());
             $(linha)
-              .find(".quantidadeproduto")
+              .find(".qntdproduto")
               .change(function () {
                 alterarProduto(linha);
               });
@@ -164,6 +170,7 @@
               });
 
             $("#dadosTabela").append(linha);
+            calcularTotal();
           }
         );
       }
@@ -171,7 +178,7 @@
       function alterarProduto(linha) {
         console.log(linha);
         var valorunitario = parseFloat($(linha).find(".valorunitario").text());
-        var qtde = parseFloat($(linha).find(".quantidadeproduto").val());
+        var qtde = parseFloat($(linha).find(".qntdproduto").val());
         $(linha)
           .find(".total")
           .text(valorunitario * qtde);

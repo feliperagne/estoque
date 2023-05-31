@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Table(name = "authorities")
 public class AppAuthority extends AbstractEntity<Integer> implements GrantedAuthority, Serializable {
     //~ Instance fields ================================================================================================
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
     @Column(name = "authority", nullable = false)
     private String authority;
