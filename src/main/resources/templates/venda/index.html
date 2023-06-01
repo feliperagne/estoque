@@ -71,6 +71,7 @@
             <th scope="col">Quantidade</th>
             <th scope="col">Valor Unitário</th>
             <th scope="col">Total</th>
+            <th scope="col"></th>
             <th scope="col">Excluir</th>
           </tr>
         </thead>
@@ -82,18 +83,18 @@
           <td class="codigo"></td>
           <td class="descricao"></td>
           <td class="quantidade">
-          <select class="qntdproduto">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </td>
+            <select class="qntdproduto">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </td>
           <td class="valorunitario"></td>
           <td class="total"></td>
           <td class="totalinput">
             <input class="totalnumber" type="hidden" />
           </td>
-          <td class="excluir">
+          <td class="btn btn-danger" style="background-color: red;">
             <a href="#" class="btnexcluir">Excluir</a>
           </td>
         </tr>
@@ -112,22 +113,22 @@
         $("#btnsalvar").click(function () {
           finalizarVenda();
         });
+
       });
 
       function incluirProduto() {
-
         var linha = $("#linhaModelo").clone();
         linha.attr("id", "");
 
-       var id = $("#idProduto").val();
-        
+        var id = $("#idProduto").val();
+
         $(linha).find(".codigo").text($("#idProduto").val());
 
         $(linha)
           .find(".descricao")
           .text($("#idProduto option:selected").text());
-          buscarProduto(id, linha);
-/*
+        buscarProduto(id, linha);
+        /*
         $(linha).find(".qntdproduto").val($("#txtquantidade").val());
 
         //alterando a qtde do produto
@@ -153,7 +154,9 @@
             var qtde = $("#txtquantidade").val();
             console.log(resultado);
             $(linha).find(".valorunitario").text(resultado.preco);
-            $(linha).find(".totalnumber").val(resultado.preco*qtde);
+            $(linha)
+              .find(".totalnumber")
+              .val(resultado.preco * qtde);
             $(linha)
               .find(".total")
               .text(resultado.preco * qtde);
@@ -177,7 +180,7 @@
 
       function alterarProduto(linha) {
         console.log(linha);
-        var valorunitario = parseFloat($(linha).find(".valorunitario").text());
+        var valorunitario = $(linha).find(".valorunitario").text();
         var qtde = parseFloat($(linha).find(".qntdproduto").val());
         $(linha)
           .find(".total")
@@ -224,7 +227,7 @@
             $(linhaclone).css("display", "block");
             $(linhaclone).find(".codigo").text(jsonResult.id);
             $(linhaclone).find(".descricao").text(jsonResult.descricao);
-            $("#dadostabela").append(linhaclone);
+            $("#dadosTabela").append(linhaclone);
           },
           failure: function (response) {
             alert("Erro ao carregar os dados: " + response);
@@ -232,19 +235,24 @@
         });
       }
 
+      function excluirProduto(linha) {
+         $(linha).remove();
+			   calcularTotal();
+      }
+
       function finalizarVenda() {
-        // Obtenha os dados da venda, como o cliente comprador, produtos e quantidades selecionados
         var idCliente = $("#idCliente").val();
         var produtos = [];
 
-        $("#dadosTabela tr").each(function () {
+        $("#dadosTabela").each(function () {
           var codigo = $(this).find(".codigo").text();
-          var quantidade = $(this).find(".quantidade").val();
+          var quantidade = $(this).find(".qntdproduto").val();
 
-          produtos.push({
-            id: id,
-            qntd: qntd,
-          });
+          var produto = {
+            id: codigo,
+            qntd: quantidade,
+          };
+          produtos.push(produto);
         });
 
         var venda = {
@@ -252,17 +260,18 @@
           produtos: produtos,
         };
 
-      
         $.ajax({
           type: "POST",
           url: "http://localhost:8080/venda/finalizarVenda",
           contentType: "application/json",
           data: JSON.stringify(venda),
           success: function (response) {
-            alert("Venda finalizada com sucesso!");
+           alert("Venda finalizada com sucesso!");
+           window.location.reload();
           },
           error: function (xhr, status, error) {
             console.log("Erro ao finalizar a venda:", error);
+            alert("Ocorreu um erro ao finalizar a venda. Por favor, tente novamente.");
           },
         });
       }
