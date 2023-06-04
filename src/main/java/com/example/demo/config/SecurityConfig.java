@@ -21,16 +21,19 @@ public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
+                .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/login").permitAll()
-                      //.requestMatchers("/funcionario/novo").hasRole("ADMIN")
+                        .requestMatchers("/funcionario/novo/**").hasAuthority("ADMIN")
+                        .requestMatchers("/funcionario/prealterar/**").hasAuthority("ADMIN")
+                        .requestMatchers("/funcionario/excluir/**").hasAuthority("ADMIN")
                         //.requestMatchers("/funcionario/listar").hasAnyRole("ADMIN","USER")
                         //.requestMatchers("/clientes/novo").hasRole("ADMIN")
                         //.requestMatchers("/clientes/listar").hasAnyRole("ADMIN", "USER")
-                
+                        
                         .anyRequest().authenticated()
                         
-
 
 
                 )

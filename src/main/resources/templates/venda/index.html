@@ -259,7 +259,7 @@
           idCliente: idCliente,
           produtos: produtos,
         };
-
+          console.log(JSON.stringify(venda));
         $.ajax({
           type: "POST",
           url: "http://localhost:8080/venda/finalizarVenda",

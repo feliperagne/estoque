@@ -39,7 +39,7 @@ public class FuncionarioController {
     UsuarioDao daoUsuario;
 
     @GetMapping("/novo")
-    @PostAuthorize("hasAuthority('ADMIN')")
+    //@PostAuthorize("hasAuthority('ADMIN')")
     public String novo(ModelMap model) {
         Funcionario funcionario = new Funcionario();
         funcionario.setUsuario(new Users());
@@ -109,7 +109,7 @@ public class FuncionarioController {
 
                 Set<AppAuthority> authorities = new HashSet<>();
 
-                if (isAdmin == true) {
+                if (isAdmin) {
                     AppAuthority adminAuthority = new AppAuthority();
                     adminAuthority.setAuthority("ADMIN");
                     adminAuthority.setUsername(usuarios.getUsername());
