@@ -17,13 +17,14 @@ public class Venda extends AbstractEntity<Integer>{
     @JoinColumn(name = "idFornecedor")
     private Fornecedor fornecedor;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "idFuncionario")
-    private Funcionario funcionario;
+    private Funcionario funcionario;*/
 
+    @ManyToOne
+    @JoinColumn(name = "idProduto")
+    private Produto produto;
 
-    @OneToMany(mappedBy = "venda")
-    private List<DetalheVenda> detalheVendas;
 
 
     public Clientes getCliente() {
@@ -42,19 +43,12 @@ public class Venda extends AbstractEntity<Integer>{
         this.fornecedor = fornecedor;
     }
 
-    public Funcionario getFuncionario() {
+   /*  public Funcionario getFuncionario() {
         return funcionario;
     }
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
     }
-
-    public List<DetalheVenda> getDetalheVendas() {
-        return detalheVendas;
-    }
-
-    public void setDetalheVendas(List<DetalheVenda> detalheVendas) {
-        this.detalheVendas = detalheVendas;
-    }
+        */
 }

@@ -6,6 +6,7 @@ import com.example.demo.pojo.AppAuthority;
 import com.example.demo.pojo.Funcionario;
 import com.example.demo.pojo.Users;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -39,7 +40,7 @@ public class FuncionarioController {
     UsuarioDao daoUsuario;
 
     @GetMapping("/novo")
-    //@PostAuthorize("hasAuthority('ADMIN')")
+    // @PostAuthorize("hasAuthority('ADMIN')")
     public String novo(ModelMap model) {
         Funcionario funcionario = new Funcionario();
         funcionario.setUsuario(new Users());
@@ -48,7 +49,7 @@ public class FuncionarioController {
     }
 
     @GetMapping("/listar")
-   //@PreAuthorize("hasAnyRole('ADMIN' , 'USER')")
+    // @PreAuthorize("hasAnyRole('ADMIN' , 'USER')")
     public String listar(ModelMap model) {
         model.addAttribute("lista", dao.findAll());
         return "/funcionario/listar";
@@ -91,6 +92,15 @@ public class FuncionarioController {
 
             if (file.isEmpty()) {
                 errors = errors + "Selecione uma imagem!";
+            }
+
+            // Verificar se o username já existe
+            String username = funcionario.getUsuario().getUsername();
+            if (daoUsuario.findByUserName(username) != null) {
+                model.addAttribute("funcionario", funcionario);
+                model.addAttribute("mensagem", "Esse nome de usuário já existe. Por favor, use outro.");
+                model.addAttribute("retorno", false);
+                return "/funcionario/index";
             }
 
             if (errors != "") {

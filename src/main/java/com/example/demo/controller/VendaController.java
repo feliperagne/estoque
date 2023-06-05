@@ -35,6 +35,8 @@ public class VendaController {
     VendaDao vendaDao;
     @Autowired
     FuncionarioDAO funcionarioDAO;
+    @Autowired
+    FornecedorDAO fornecedorDAO;
 
     @GetMapping("/novo")
     public String index(ModelMap model) {
@@ -49,6 +51,10 @@ public class VendaController {
     @ModelAttribute(name = "listacliente")
     public List<Clientes> listaCliente() {
         return clientesDAO.findAll();
+    }
+    @ModelAttribute(name = "listafornecedor")
+    public List<Fornecedor> listaFornecedor() {
+        return fornecedorDAO.findAll();
     }
 
     @PostMapping(path = "/salvarProduto", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

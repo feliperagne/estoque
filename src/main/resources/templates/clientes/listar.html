@@ -19,16 +19,11 @@
             height: 100%;
         }
     </style>
-
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-
-<header th:include="fragmentos::topo">
-</header>
-<main>
-    <h1 style="font-family:cursive;" >Clientes cadastrados</h1>
-
+<header th:include="fragmentos::topo"></header>
+<main class="container">
+    <h1 style="font-family:cursive;">Clientes cadastrados</h1>
     <div style="margin:20px">
         <a th:href="@{/clientes/novo}" class="btn btn-primary">Incluir novo Cliente</a>
     </div>
@@ -46,24 +41,26 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item:${lista}"> <!-- TEM Q SER O MESMO NOME DA CONTROLLER -->
+        <tr th:each="item:${lista}">
             <th scope="row" th:text="${item.id}"></th>
             <td th:text="${item.nome}"></td>
             <td th:text="${item.email}"></td>
             <td th:text="${item.telefone}"></td>
-            <td th:text="${#temporals.format(item.dataNascimento, 'dd/MM/yyyy')}" ></td>
+            <td th:text="${#temporals.format(item.dataNascimento, 'dd/MM/yyyy')}"></td>
             <td>
-            <div class="circle-image">
-           <img class="img-fluid" th:src="@{'/clientes/getImagem/'+ *{item.imagem}}"/>
-            </div>
-             </td>  
-            <td> <a class="btn btn-info alterar" th:href="@{/clientes/prealterar(id=${item.id})}">Alterar</a></td>
-            <td> <button class="btn btn-danger excluir" data-target="#myModal" type="button" th:id="${item.id}" data-value="/clientes/excluir?id={id}" data-toggle="modal" >Excluir</button> </td>
+                <div class="circle-image">
+                    <img class="img-fluid" th:src="@{'/clientes/getImagem/'+ ${item.imagem}}"/>
+                </div>
+            </td>
+            <td>
+                <a class="btn btn-info alterar" th:href="@{/clientes/prealterar(id=${item.id})}">Alterar</a>
+            </td>
+            <td>
+                <button class="btn btn-danger excluir" data-target="#myModal" type="button" th:id="${item.id}" data-value="/clientes/excluir?id={id}" data-toggle="modal">Excluir</button>
+            </td>
         </tr>
         </tbody>
     </table>
-
-    <!--CONFIRM MODAL-->
     <div class="modal fade" tabindex="-1" role="dialog" id="myModal" th:fragment="modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -78,20 +75,15 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button id="ok_confirm" type="button" class="btn btn-primary">Ok</button>
                 </div>
-            </div> <!-- /.modal-content -->
-        </div> <!-- /.modal-dialog -->
-    </div> <!-- /.modal -->
-
-    <div th:if="${retorno} !=null" class="row">
+            </div>
+        </div>
+    </div>
+    <div th:if="${retorno} != null" class="row">
         <span th:if="${retorno}" class="alert alert-success" th:text="${mensagem}"></span>
         <span th:if="!${retorno}" class="alert alert-danger" th:text="${mensagem}"></span>
     </div>
-
 </main>
 <footer th:include="fragmentos::rodape"></footer>
-
-
-
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>

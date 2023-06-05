@@ -10,6 +10,36 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
+    <style>
+      body {
+        font-family: cursive;
+        margin-bottom: 70px;
+      }
+
+      h1 {
+        margin-top: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      #btnincluirproduto {
+        margin-top: 20px;
+      }
+
+      .table {
+        margin-top: 20px;
+      }
+
+      #totalgeral {
+        font-weight: bold;
+      }
+
+      #btnsalvar {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
     <script
@@ -20,7 +50,7 @@
 
     <header th:include="fragmentos::topo"></header>
     <main>
-      <h1 style="font-family: cursive">Cadastro da venda</h1>
+      <h1>Cadastro da venda</h1>
 
       <div class="form-group">
         <label for="idCliente">Cliente Comprador:</label>
@@ -46,13 +76,25 @@
         </select>
       </div>
 
-      <div style="margin: 20px" class="row">
+      <div class="form-group">
+        <label for="idFornecedor">Fornecedor:</label>
+        <select class="form-control" id="idFornecedor">
+          <option value="">Selecione um produto</option>
+          <option
+            th:each="item:${listafornecedor}"
+            th:value="${item.id}"
+            th:text="${item.nome}"
+          ></option>
+        </select>
+      </div>
+
+      <div class="row">
         <div class="col-4">
           <input
             value="1"
             type="number"
             id="txtquantidade"
-            placeholder="insira a quantidade de produtos"
+            placeholder="Insira a quantidade de produtos"
             class="form-control"
           />
         </div>
@@ -99,8 +141,9 @@
           </td>
         </tr>
       </table>
-      <h3>Total Geral <span id="totalgeral"></span></h3>
-      <button id="btnsalvar">Salvar</button>
+
+      <h3>Total Geral: <span id="totalgeral"></span></h3>
+      <button id="btnsalvar" class="btn btn-primary">Salvar</button>
     </main>
     <footer th:include="fragmentos::rodape"></footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -113,7 +156,6 @@
         $("#btnsalvar").click(function () {
           finalizarVenda();
         });
-
       });
 
       function incluirProduto() {
@@ -123,28 +165,10 @@
         var id = $("#idProduto").val();
 
         $(linha).find(".codigo").text($("#idProduto").val());
-
         $(linha)
           .find(".descricao")
           .text($("#idProduto option:selected").text());
         buscarProduto(id, linha);
-        /*
-        $(linha).find(".qntdproduto").val($("#txtquantidade").val());
-
-        //alterando a qtde do produto
-        $(linha)
-          .find(".qntdproduto")
-          .change(function () {
-            alterarProduto(linha);
-          });
-
-        $(linha)
-          .find(".btnexcluir")
-          .click(function () {
-            excluirProduto(linha);
-          });
-
-        $("#dadosTabela").append(linha);*/
       }
 
       function buscarProduto(id, linha) {
@@ -152,7 +176,7 @@
           "http://localhost:8080/produto/getProduto/" + id,
           function (resultado) {
             var qtde = $("#txtquantidade").val();
-            console.log(resultado);
+
             $(linha).find(".valorunitario").text(resultado.preco);
             $(linha)
               .find(".totalnumber")
@@ -179,7 +203,6 @@
       }
 
       function alterarProduto(linha) {
-        console.log(linha);
         var valorunitario = $(linha).find(".valorunitario").text();
         var qtde = parseFloat($(linha).find(".qntdproduto").val());
         $(linha)
@@ -194,63 +217,25 @@
       function calcularTotal() {
         var total = 0;
 
-        $("#dadosTabela").each(function (index, elemento) {
+        $("#dadosTabela tr").each(function (index, elemento) {
           var valor = $(elemento).find(".totalnumber").val();
-
           total = parseFloat(total) + parseFloat(valor);
         });
 
         $("#totalgeral").text(total);
       }
 
-      function salvarProduto() {
-        var produto = {
-          id: $("#idProduto").val(),
-          descricao: $("#idProduto option:selected").text(),
-        };
-
-        var model = {
-          id: "null",
-          produto: produto,
-          qtde: $("#txtquantidade").val(),
-        };
-
-        $.ajax({
-          type: "POST",
-          url: "http://localhost:8080/venda/salvarProduto",
-          contentType: "application/json; charset=utf-8",
-          data: JSON.stringify(model),
-          dataType: "json",
-          success: function (jsonResult) {
-            console.log(jsonResult);
-            var linhaclone = $("#linhaexemplo").clone();
-            $(linhaclone).css("display", "block");
-            $(linhaclone).find(".codigo").text(jsonResult.id);
-            $(linhaclone).find(".descricao").text(jsonResult.descricao);
-            $("#dadosTabela").append(linhaclone);
-          },
-          failure: function (response) {
-            alert("Erro ao carregar os dados: " + response);
-          },
-        });
-      }
-
-      function excluirProduto(linha) {
-         $(linha).remove();
-			   calcularTotal();
-      }
-
       function finalizarVenda() {
         var idCliente = $("#idCliente").val();
+        var idFornecedor = $("#idFornecedor").val();
         var produtos = [];
 
-        $("#dadosTabela").each(function () {
+        $("#dadosTabela tr").each(function () {
           var codigo = $(this).find(".codigo").text();
           var quantidade = $(this).find(".qntdproduto").val();
 
           var produto = {
             id: codigo,
-            qntd: quantidade,
           };
           produtos.push(produto);
         });
@@ -258,16 +243,17 @@
         var venda = {
           idCliente: idCliente,
           produtos: produtos,
+          idFornecedor: idFornecedor,
         };
-          console.log(JSON.stringify(venda));
+        console.log(JSON.stringify(venda));
         $.ajax({
           type: "POST",
           url: "http://localhost:8080/venda/finalizarVenda",
           contentType: "application/json",
           data: JSON.stringify(venda),
           success: function (response) {
-           alert("Venda finalizada com sucesso!");
-           window.location.reload();
+            alert("Venda finalizada com sucesso!");
+            window.location.reload();
           },
           error: function (xhr, status, error) {
             console.log("Erro ao finalizar a venda:", error);

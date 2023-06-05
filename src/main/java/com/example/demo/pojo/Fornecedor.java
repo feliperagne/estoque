@@ -25,7 +25,7 @@ public class Fornecedor extends AbstractEntity<Integer> {
     @Column(name = "cidade", nullable = false)
     private String cidade;
     @NotBlank(message = "Precisamos saber de onde a empresa vem!")
-    @Size(max = 8, message = "O cep possui 8 números!")
+    @Size(max = 8,min =8, message = "O cep possui 8 números!")
     @Column(name = "cep", nullable = false, length = 8)
     private String cep;
 

@@ -3,7 +3,12 @@ package com.example.demo.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -15,17 +20,19 @@ import org.springframework.format.annotation.NumberFormat;
 public class Produto extends AbstractEntity<Integer> {
 
    
-    @Column(name = "preco")
+    @Column(name = "preco",nullable = false)
     @NumberFormat(style= NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
+    @NotNull(message = "Informe um preço para o seu produto!")
     private Double preco;
-    @NotBlank(message = "Informe um preço para o seu produto!")
-    @Column(name = "descricao")
+    @NotBlank(message = "O produto precisa de uma descrição!")
+    @Column(name = "descricao", nullable = false)
     private String descricao;
     @Column(name = "imagem", length = 300)
     private String imagem;
     @PositiveOrZero(message = "A quantidade deve ser maior ou igual a 0!")
-    @Column(name = "quantidade")
+    @Column(name = "quantidade", nullable = false)
     @NumberFormat(style= NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
+    @NotNull(message="O produto precisa ter uma quantidade!")
     private Double qntd;
 
     @JsonIgnore
@@ -38,7 +45,8 @@ public class Produto extends AbstractEntity<Integer> {
     @JoinColumn(name = "categoria")
     private Categoria categoria;
 
-
+    @OneToMany(mappedBy = "produto")
+    private List<Venda> vendas = new ArrayList<>();
 
 
     public String getDescricao() {

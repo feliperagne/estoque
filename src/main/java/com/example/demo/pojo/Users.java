@@ -20,7 +20,6 @@ public class Users extends AbstractEntity<Integer> implements UserDetails {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.PERSIST)
     private List<Funcionario> funcionario;
-
     @Column(length = 150, nullable = false, unique = true)
     private String username;
     @Column(length = 350, nullable = false)
