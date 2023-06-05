@@ -28,10 +28,6 @@ public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter{
                         .requestMatchers("/funcionario/novo/**").hasAuthority("ADMIN")
                         .requestMatchers("/funcionario/prealterar/**").hasAuthority("ADMIN")
                         .requestMatchers("/funcionario/excluir/**").hasAuthority("ADMIN")
-                        //.requestMatchers("/funcionario/listar").hasAnyRole("ADMIN","USER")
-                        //.requestMatchers("/clientes/novo").hasRole("ADMIN")
-                        //.requestMatchers("/clientes/listar").hasAnyRole("ADMIN", "USER")
-                        
                         .anyRequest().authenticated()
                         
 
@@ -46,8 +42,13 @@ public class SecurityConfig extends GlobalAuthenticationConfigurerAdapter{
                 .logout((logout) -> logout.invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login").permitAll());
-
+                        .logoutSuccessUrl("/login").permitAll())
+                        
+                        .exceptionHandling((exceptionHandling) -> exceptionHandling
+                .accessDeniedPage("/acesso_negado")
+                        
+                        );
+                        
         return http.build();
     }
 }
