@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dao.CategoriaDAO;
-import com.example.demo.dao.DetalheVendaDAO;
 import com.example.demo.dao.FornecedorDAO;
 import com.example.demo.dao.ProdutoDao;
 import com.example.demo.pojo.Categoria;
@@ -34,8 +33,6 @@ public class ProdutoController {
     private FornecedorDAO daofornecedor;
     @Autowired
     private ProdutoDao dao;
-    @Autowired
-    private DetalheVendaDAO daodetalhevenda;
     @Autowired
     private CategoriaDAO daocategoria;
 

@@ -53,8 +53,8 @@
       <h1>Cadastro da venda</h1>
 
       <div class="form-group">
-        <label for="idCliente">Cliente Comprador:</label>
-        <select class="form-control" id="idCliente">
+        <label for="id_cliente">Cliente Comprador:</label>
+        <select class="form-control" id="id_cliente">
           <option value="">Selecione um cliente:</option>
           <option
             th:each="item:${listacliente}"
@@ -65,8 +65,8 @@
       </div>
 
       <div class="form-group">
-        <label for="idProduto">Produto:</label>
-        <select class="form-control" id="idProduto">
+        <label for="id_produto">Produto:</label>
+        <select class="form-control" id="id_produto">
           <option value="">Selecione um produto</option>
           <option
             th:each="item:${listaproduto}"
@@ -77,8 +77,8 @@
       </div>
 
       <div class="form-group">
-        <label for="idFornecedor">Fornecedor:</label>
-        <select class="form-control" id="idFornecedor">
+        <label for="id_fornecedor">Fornecedor:</label>
+        <select class="form-control" id="id_fornecedor">
           <option value="">Selecione um produto</option>
           <option
             th:each="item:${listafornecedor}"
@@ -162,12 +162,12 @@
         var linha = $("#linhaModelo").clone();
         linha.attr("id", "");
 
-        var id = $("#idProduto").val();
+        var id = $("#id_produto").val();
 
-        $(linha).find(".codigo").text($("#idProduto").val());
+        $(linha).find(".codigo").text($("#id_produto").val());
         $(linha)
           .find(".descricao")
-          .text($("#idProduto option:selected").text());
+          .text($("#id_produto option:selected").text());
         buscarProduto(id, linha);
       }
 
@@ -225,25 +225,29 @@
         $("#totalgeral").text(total);
       }
 
+      function excluirProduto(linha) {
+         $(linha).remove();
+			   calcularTotal();
+      }
+
       function finalizarVenda() {
-        var idCliente = $("#idCliente").val();
-        var idFornecedor = $("#idFornecedor").val();
+        var id_cliente = $("#id_cliente").val();
+        var id_fornecedor = $("#id_fornecedor").val();
         var produtos = [];
 
         $("#dadosTabela tr").each(function () {
-          var codigo = $(this).find(".codigo").text();
-          var quantidade = $(this).find(".qntdproduto").val();
+          var id_produto = $(this).find(".codigo").text();
 
           var produto = {
-            id: codigo,
+            id_produto: id_produto
           };
           produtos.push(produto);
         });
 
         var venda = {
-          idCliente: idCliente,
+          id_cliente: id_cliente,
           produtos: produtos,
-          idFornecedor: idFornecedor,
+          id_fornecedor: id_fornecedor,
         };
         console.log(JSON.stringify(venda));
         $.ajax({

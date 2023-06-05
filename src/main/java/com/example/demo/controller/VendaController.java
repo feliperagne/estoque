@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,6 @@ public class VendaController {
     ProdutoDao produtoDao;
     @Autowired
     ClientesDAO clientesDAO;
-    @Autowired
-    DetalheVendaDAO detalheVendaDAO;
     @Autowired
     VendaDao vendaDao;
     @Autowired
@@ -70,8 +69,9 @@ public class VendaController {
         }
         return new ResponseEntity<Object>(produto, HttpStatus.OK);
     }
-
+    
     @PostMapping(path = "/finalizarVenda", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public ResponseEntity<Object> finalizarVenda(@RequestBody Venda venda) {
         try {
             if (venda.getId() == null) {

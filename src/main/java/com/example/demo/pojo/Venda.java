@@ -1,28 +1,27 @@
 package com.example.demo.pojo;
-
 import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @EntityScan
 @Table(name = "Venda")
 public class Venda extends AbstractEntity<Integer>{
+    @JsonProperty
     @ManyToOne
-    @JoinColumn(name = "idCliente")
+    @JoinColumn(name = "id_cliente")
     private Clientes cliente;
-
+    @JsonProperty
     @ManyToOne
-    @JoinColumn(name = "idFornecedor")
+    @JoinColumn(name = "id_fornecedor")
     private Fornecedor fornecedor;
-
-    /*@ManyToOne
+   /*  @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "idFuncionario")
     private Funcionario funcionario;*/
-
+    @JsonProperty
     @ManyToOne
-    @JoinColumn(name = "idProduto")
+    @JoinColumn(name = "id_produto")
     private Produto produto;
 
 
@@ -43,12 +42,21 @@ public class Venda extends AbstractEntity<Integer>{
         this.fornecedor = fornecedor;
     }
 
-   /*  public Funcionario getFuncionario() {
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+
+    /*  public Funcionario getFuncionario() {
         return funcionario;
     }
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
-    }
-        */
+    }*/
+        
 }
