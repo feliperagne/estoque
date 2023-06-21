@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.dao.*;
 import com.example.demo.pojo.*;
 
-import jakarta.persistence.Id;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,10 +36,12 @@ public class VendaController {
     @Autowired
     FuncionarioDAO funcionarioDAO;
     @Autowired
-    FornecedorDAO fornecedorDAO;
+    DetalheVendaDao detalheVendaDao;
+    
 
     @GetMapping("/novo")
     public String index(ModelMap model) {
+        model.addAttribute("venda", new Venda());
         return "/venda/index";
     }
 
@@ -51,40 +54,68 @@ public class VendaController {
     public List<Clientes> listaCliente() {
         return clientesDAO.findAll();
     }
-    @ModelAttribute(name = "listafornecedor")
-    public List<Fornecedor> listaFornecedor() {
-        return fornecedorDAO.findAll();
-    }
 
-    @PostMapping(path = "/salvarProduto", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> salvar(@RequestBody Produto produto) {
-        try {
 
-            if (produto.getId() == null)
-                produtoDao.save(produto);
-            else
-                produtoDao.update(produto);
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
-        }
-        return new ResponseEntity<Object>(produto, HttpStatus.OK);
-    }
-    
-    @PostMapping(path = "/finalizarVenda", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
-    public ResponseEntity<Object> finalizarVenda(@RequestBody Venda venda) {
-        try {
-            if (venda.getId() == null) {
-                vendaDao.save(venda);
-            } else {
-                vendaDao.update(venda);
+    @PostMapping(path = "/salvar", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> salvarVenda(@RequestBody VendaModel vendaModel, ModelMap model) {
+        double total = 0;
+        double valor_unit = 0;
+        int qtde= 0;
+        int idproduto=0;
+        try{
+
+            Venda vendas = new Venda();
+            List<Produto> listaProdutos = new ArrayList<>();
+
+            Clientes vendaCliente = clientesDAO.findById(vendaModel.getIdCliente());
+            vendas.setCliente(vendaCliente);
+
+            int idFuncionario = 1;//(int) model.getAttribute("idUsuario");
+            Funcionario funcionario = funcionarioDAO.findById(idFuncionario);
+            vendas.setFuncionarios(funcionario);
+
+            vendas.setDataVenda(LocalDate.now());
+ 
+            List<ProdutosModel> produtosModels = vendaModel.getProdutos();
+
+            for (ProdutosModel produto : produtosModels){
+                total += produto.getTotal();
+            } 
+
+            vendas.setValorTotal(total);
+
+            vendaDao.save(vendas);
+
+            int idVenda = vendas.getId();
+
+
+            for (ProdutosModel produto : produtosModels) {
+
+                DetalheVenda detalhe = new DetalheVenda();
+  
+                Produto produto_Venda = produtoDao.findById(produto.getCodigo());
+  
+                detalhe.setProdutos(produto_Venda);
+                detalhe.setValor_unit(produto.valor_unitario);
+                detalhe.setQtde(produto.getQtde());
+                detalhe.setVendas(vendas);
+                //baixa estoque
+               produto_Venda.setQntd(produto_Venda.getQntd() - produto.qtde);
+
+                produtoDao.update(produto_Venda);
+
+                detalheVendaDao.save(detalhe);
+
             }
+
+            return new ResponseEntity<>(idVenda, HttpStatus.OK);
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            // Trate a exceção ou registre o erro adequadamente
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-        return new ResponseEntity<>(venda, HttpStatus.OK);
     }
 
 }

@@ -1,5 +1,9 @@
 package com.example.demo.pojo;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,24 +11,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @EntityScan
 @Table(name = "Venda")
 public class Venda extends AbstractEntity<Integer>{
-    @JsonProperty
+
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    @JoinColumn(name = "id_cliente", nullable = false)
     private Clientes cliente;
-    @JsonProperty
-    @ManyToOne
-    @JoinColumn(name = "id_fornecedor")
-    private Fornecedor fornecedor;
-   /*  @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "idFuncionario")
-    private Funcionario funcionario;*/
-    @JsonProperty
-    @ManyToOne
-    @JoinColumn(name = "id_produto")
-    private Produto produto;
 
+    @ManyToOne
+    @JoinColumn(name = "id_funcionario", nullable = false)
+    private Funcionario funcionarios;
 
+    @OneToMany(mappedBy = "venda")
+    private List<DetalheVenda> detalheVenda;
+
+    @Column(name = "data_da_venda", nullable = false)
+    private LocalDate dataVenda;
+
+    @Column(name = "valor_total", nullable = false)
+    private double valorTotal;
+
+    @OneToMany(mappedBy = "venda")
+    private List<DetalheVenda> detalheVendas;
 
     public Clientes getCliente() {
         return cliente;
@@ -34,29 +40,43 @@ public class Venda extends AbstractEntity<Integer>{
         this.cliente = cliente;
     }
 
-    public Fornecedor getFornecedor() {
-        return fornecedor;
+    public Funcionario getFuncionarios() {
+        return funcionarios;
     }
 
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
+    public void setFuncionarios(Funcionario funcionarios) {
+        this.funcionarios = funcionarios;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public List<DetalheVenda> getDetalheVenda() {
+        return detalheVenda;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setDetalheVenda(List<DetalheVenda> detalheVenda) {
+        this.detalheVenda = detalheVenda;
     }
 
-
-    /*  public Funcionario getFuncionario() {
-        return funcionario;
+    public LocalDate getDataVenda() {
+        return dataVenda;
     }
 
-    public void setFuncionario(Funcionario funcionario) {
-        this.funcionario = funcionario;
-    }*/
-        
+    public void setDataVenda(LocalDate dataVenda) {
+        this.dataVenda = dataVenda;
+    }
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public List<DetalheVenda> getDetalheVendas() {
+        return detalheVendas;
+    }
+
+    public void setDetalheVendas(List<DetalheVenda> detalheVendas) {
+        this.detalheVendas = detalheVendas;
+    }
 }

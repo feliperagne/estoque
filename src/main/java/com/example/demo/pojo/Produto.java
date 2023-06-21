@@ -12,42 +12,50 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.format.annotation.NumberFormat;
 
-
-
 @Entity
 @EntityScan
 @Table(name = "produto")
 public class Produto extends AbstractEntity<Integer> {
 
-   
-    @Column(name = "preco",nullable = false)
-    @NumberFormat(style= NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
+    @Column(name = "preco", nullable = false)
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
     @NotNull(message = "Informe um preço para o seu produto!")
     private Double preco;
+
     @NotBlank(message = "O produto precisa de uma descrição!")
     @Column(name = "descricao", nullable = false)
     private String descricao;
+
     @Column(name = "imagem", length = 300)
     private String imagem;
+
     @PositiveOrZero(message = "A quantidade deve ser maior ou igual a 0!")
     @Column(name = "quantidade", nullable = false)
-    @NumberFormat(style= NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
-    @NotNull(message="O produto precisa ter uma quantidade!")
+    @NumberFormat(style = NumberFormat.Style.CURRENCY, pattern = "#,##0.00")
+    @NotNull(message = "O produto precisa ter uma quantidade!")
     private Double qntd;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fornecedor")
     private Fornecedor fornecedor;
-    
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "categoria")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "produto")
-    private List<Venda> vendas = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "produtos")
+    private List<DetalheVenda> detalheVendas;
 
+    public Double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
+    }
 
     public String getDescricao() {
         return descricao;
@@ -55,6 +63,14 @@ public class Produto extends AbstractEntity<Integer> {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 
     public Double getQntd() {
@@ -65,14 +81,6 @@ public class Produto extends AbstractEntity<Integer> {
         this.qntd = qntd;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
     public Fornecedor getFornecedor() {
         return fornecedor;
     }
@@ -81,19 +89,20 @@ public class Produto extends AbstractEntity<Integer> {
         this.fornecedor = fornecedor;
     }
 
-    public Double getPreco() {
-        return preco;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setPreco(Double preco) {
-        this.preco = preco;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
-    public String getImagem() {
-        return imagem;
+
+    public List<DetalheVenda> getDetalheVendas() {
+        return detalheVendas;
     }
 
-    public void setImagem(String imagem) {
-        this.imagem = imagem;
+    public void setDetalheVendas(List<DetalheVenda> detalheVendas) {
+        this.detalheVendas = detalheVendas;
     }
 }

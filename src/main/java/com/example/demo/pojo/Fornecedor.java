@@ -29,8 +29,6 @@ public class Fornecedor extends AbstractEntity<Integer> {
     @Column(name = "cep", nullable = false, length = 8)
     private String cep;
 
-    @OneToMany(mappedBy = "fornecedor")
-    private List<Venda> vendas;
 
     @OneToMany(mappedBy = "fornecedor")
     private List<Produto> produtos;
@@ -74,14 +72,6 @@ public class Fornecedor extends AbstractEntity<Integer> {
 
     public void setCep(String cep) {
         this.cep = cep;
-    }
-
-    public List<Venda> getVendas() {
-        return vendas;
-    }
-
-    public void setVendas(List<Venda> vendas) {
-        this.vendas = vendas;
     }
 
     public List<Produto> getProdutos() {
