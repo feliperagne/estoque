@@ -7,6 +7,7 @@ public class VendaModel {
     public String id;
     public String dataVenda;
     public int idCliente;
+    public int idFuncionario;
     public List<ProdutosModel> produtos;
 
     public String getId() {
@@ -31,6 +32,14 @@ public class VendaModel {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public int getidFuncionario() {
+        return idFuncionario;
+    }
+
+    public void setidFuncionario(int idFuncionario) {
+        this.idFuncionario = idFuncionario;
     }
 
     public List<ProdutosModel> getProdutos() {

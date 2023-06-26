@@ -37,11 +37,15 @@ public class VendaController {
     FuncionarioDAO funcionarioDAO;
     @Autowired
     DetalheVendaDao detalheVendaDao;
-    
+    @Autowired
+    UsuarioDao usuarioDao;
+     
 
     @GetMapping("/novo")
     public String index(ModelMap model) {
+        
         model.addAttribute("venda", new Venda());
+
         return "/venda/index";
     }
 
@@ -53,6 +57,31 @@ public class VendaController {
     @ModelAttribute(name = "listacliente")
     public List<Clientes> listaCliente() {
         return clientesDAO.findAll();
+    }
+
+    @ModelAttribute(name = "listafuncionario")
+    public List<Funcionario> listaFuncionario() {
+        return funcionarioDAO.findAll();
+    }
+  
+    @GetMapping("/resumo_venda") 
+    public String resumoVenda(@RequestParam("id") int id, ModelMap model) {
+        model.addAttribute("listaVenda", vendaDao.findById(id));
+        return "/venda/resumo_venda";
+    } 
+
+    @GetMapping("/informacoes") 
+    public String informacoes(@RequestParam("id") int id, ModelMap model) {
+        model.addAttribute("listaInformacoes", detalheVendaDao.findBySaleId(id));
+        return "/venda/informacoes";
+    } 
+
+
+        @GetMapping("/vendasFeitas")
+    public String vendasFeitas(ModelMap model) {
+
+        model.addAttribute("listaVenda", vendaDao.findAll());
+        return "/venda/vendasFeitas";
     }
 
 
@@ -70,9 +99,14 @@ public class VendaController {
             Clientes vendaCliente = clientesDAO.findById(vendaModel.getIdCliente());
             vendas.setCliente(vendaCliente);
 
-            int idFuncionario = 1;//(int) model.getAttribute("idUsuario");
-            Funcionario funcionario = funcionarioDAO.findById(idFuncionario);
-            vendas.setFuncionarios(funcionario);
+            int idUsuario = 0;
+            Funcionario usuario = usuarioDao.getUsuarioLogado();
+            if  (usuario != null){
+                idUsuario = usuario.getId();
+            } 
+
+            Funcionario funcionario = funcionarioDAO.findById(idUsuario);
+            vendas.setFuncionarios(funcionario);  
 
             vendas.setDataVenda(LocalDate.now());
  
